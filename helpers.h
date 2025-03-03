@@ -1,17 +1,30 @@
-#include <stdio.h>
-#include <string.h>
+/* function declarations
+ * ---------------------
+ */
 
-#include <lex.h>
-#include <parse.h>
-#include <variables.h>
-#include <execute.h>
-#include <map.h>
-#include <stack.h>
-#include <garbage.h>
-#include <global_vars_declared.h>
-#include <helpers.h>
+#include "map.h"
+#include "variables.h"
+#include "stack.h"
+#include "garbage.h"
+#include "lex.h"
+#include "parse.h"
+#include "execute.h"
 
-void
+#include "map.c"
+#include "variables.c"
+#include "stack.c"
+#include "garbage.c"
+#include "lex.c"
+#include "parse.c"
+#include "execute.c"
+
+/* alte functii ajutatoare */
+static void free_on_quit(void);
+static void print_lex(void);
+static void print_parsed(struct node *n);
+static void print_subprograme(void);
+
+static void
 free_on_quit(void)
 {
 	while (lex_pop_from_file_stack());
@@ -24,7 +37,7 @@ free_on_quit(void)
 	free_garbage_map();
 }
 
-void
+static void
 print_lex(void)
 {
 	int i;
@@ -145,7 +158,7 @@ print_parsed(struct node *n)
 	print_parsed(n->next);
 }
 
-void
+static void
 print_subprograme(void)
 {
 	int k, i;
@@ -167,4 +180,3 @@ print_subprograme(void)
 		}
 	}
 }
-

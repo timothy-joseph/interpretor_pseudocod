@@ -1,12 +1,4 @@
-#include <stdlib.h>
-#include <string.h>
-
-#include <variables.h>
-#include <map.h>
-#include <errors.h>
-#include <garbage.h>
-#include <lex.h>
-#include <parse.h>
+#include "variables.h"
 
 struct map_utilities variable_map_utilities = {
 	.hash_algo=adler32_string,
@@ -20,6 +12,7 @@ struct subprogram *
 make_subprogram(char *name, char **var_names, int var_names_end, struct node *cod)
 {
 	/* face un pointer catre un subprogram - alocat dinamic */
+	int r, c;
 	struct subprogram *tmp = (struct subprogram *)malloc(sizeof(struct subprogram));
 
 	if (tmp == NULL)
@@ -35,6 +28,7 @@ void*
 insert_variable(void **var_head, const void *name)
 {
 	/* insereaza o variabila si returneaza un pointer la ea */
+	int i;
 	struct variable *tmp = (struct variable *)calloc(1, sizeof(struct variable));
 
 	if (tmp == NULL)
@@ -123,4 +117,3 @@ single_dereference_variable_map_func(void **var_map)
 	/* utilizat pentru map_utilities */
 	return (void *)(*(struct variable **)var_map);
 }
-

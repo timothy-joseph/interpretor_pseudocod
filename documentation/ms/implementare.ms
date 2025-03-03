@@ -8,8 +8,6 @@
 Proiect de atestat - Interpretor de Pseudocod
 .AU
 Realizator: C\[u0069_0302]cu Timotei-Iosif
-.AI
-2023
 .ND ""
 .AB no
 Detalii de implementare a interpretorului de pseudocod, detalii despre utilizarea interpretorului, si exemple de pseudocod valide.

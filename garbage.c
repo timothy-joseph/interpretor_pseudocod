@@ -1,10 +1,4 @@
-#include <stdlib.h>
-
-#include <garbage.h>
-#include <variables.h>
-#include <map.h>
-#include <errors.h>
-#include <global_vars_declared.h>
+#include "garbage.h"
 
 struct map_utilities garbage_map_utilities = {
 	.hash_algo=adler32_voidp,
@@ -14,7 +8,7 @@ struct map_utilities garbage_map_utilities = {
 	.search_func=garbage_search,
 };
 
-void *
+void*
 insert_possible_garbage(void **garbage_head, const void *to_insert)
 {
 	/* insereaza un element in possible_garbage_map */
@@ -212,4 +206,3 @@ garbage_single_dereferece(void **garbage_map)
 	/* folosit pentru map utilities */
 	return (void *)(*(struct garbage **)garbage_map);
 }
-

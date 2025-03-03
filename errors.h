@@ -1,6 +1,3 @@
-#ifndef ERRORS_H
-#define ERRORS_H
-
 #define ERROR_ALLOC_TOKENS "eroare la allocarea memoriei pentru tokenuri"
 #define ERROR_REALLOC_TOKENS "eroare la reallocarea memoriei pentru tokenuri"
 #define ERROR_ALLOC_NODE "erorare la allocarea memoriei pentru un nod nou la parser"
@@ -60,8 +57,17 @@
 #define ERROR_INSTRUCTION_SAME_LINE "la instructiunea \"daca\"/\"cat timp\"/\"pana cand\"/\"repeta\"/\"pentru\"/declarare subprogram de la linia %d in fisierul %s se pune pe linia urmatoare indentata cu un nivel in plus fata de instructiunea de decizie/repetitie/declarare subprogram (indentarea se face cu caracterul '|') instructiunea din interiorul structurii"
 #define ERROR_PRESIDENCY_NUMBER 999
 
-void error(const char *s, ...);
-void free_on_quit(void);
+static void error(const char *s, ...);
+static void free_on_quit(void);
 
-#endif
+static void
+error(const char *format, ...)
+{
+	va_list args;
 
+	va_start(args, format);
+	vfprintf(stderr, format, args);
+	va_end(args);
+	free_on_quit();
+	exit(-1);
+}

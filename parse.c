@@ -1,200 +1,8 @@
 /* TODO: make break up parse_subprogram into smaller functions */
-#include <stdlib.h>
-#include <string.h>
-
-#include <parse.h>
-#include <errors.h>
-#include <map.h>
-#include <global_vars_declared.h>
-
-struct node*
-parse(int start, int indent)
-{
-	int k, tt_next_pos = start;
-	struct node *ret = NULL;
-
-	if (start > tokens_end) {
-		return NULL;
-	} else if (tokens[start].indent < indent) {
-		indent_change_pos = start;
-		return NULL;
-	}
-
-	for (k = start; k <= tokens_end; k++) {
-		if (tokens[k].indent > indent)
-			error(ERROR_INDENT_FORMAT, tokens[k].linia,
-			      tokens[k].filename);
-		if (tokens[k].type == TT_NEXT || tokens[k].type == TT_EOF) {
-			tt_next_pos = k;
-			break;
-		}
-	}
-
-	switch (tokens[start].type) {
-	case TT_DACA:
-		return parse_daca(start, indent, tt_next_pos);
-	case TT_ALTFEL:
-		indent_change_pos = start;
-		has_else = 1;
-		return NULL;
-	case TT_CATTIMP: /* FALLTHROUGH */
-	case TT_PANACAND:
-		return parse_while(start, indent, tt_next_pos);
-	case TT_REPETA:
-		return parse_repeta(start, indent, tt_next_pos);
-	case TT_PENTRU:
-		return parse_pentru(start, indent, tt_next_pos);
-	case TT_SUBPROGRAM:
-		return parse_subprogram(start, indent, tt_next_pos);
-	case TT_CITESTETOT: /* FALLTHROUGH */
-	case TT_CITESTE:
-		return parse_citeste(start, indent, tt_next_pos);
-	case TT_SCRIE:
-		return parse_scrie(start, indent, tt_next_pos);
-	case TT_RETURN:
-		ret = new_node(TN_RETURN, "", tokens[start].linia,
-		               tokens[start].filename);
-		ret->expresii[0] = parse_expression(start + 1, tt_next_pos - 1);
-		ret->next = parse(tt_next_pos + 1, indent);
-		return ret;
-	case TT_EOF:
-		ret = new_node(TN_EOF, "", tokens[start].linia,
-		              tokens[start].filename);
-		return ret;
-	default:
-		ret = parse_expression(start, tt_next_pos - 1);
-		ret->next = parse(tt_next_pos + 1, indent);
-		return ret;
-	}
-}
-
-struct node*
-parse_expression(int start, int end)
-{
-	/* aceasta functie creeaza o expresie cu tip de notare prefix
-	 * si este pusa intr-un arbore
-	 * notarea prefix nu are nevoie de paranteze si in notarea
-	 * prefix, simbolului cu cel mai mic grad (cel care sa
-	 * fie executat ultimul) este pus primul. de asemenea, daca
-	 * apar mai multe simboluri cu acelasi grad minim si valide
-	 * (sa nu fie in paranteze), se va pune pe primul loc in
-	 * notarea prefix cel care apare ultimul in notarea infix
-	 * (normala)
-	 * ex: 3 + 4 => + 3 4
-	 * ex: 1 + 2 * 4 => + 1 * 2 4
-	 * ex: (1 + 2) * 4 => * + 1 2 4
-	 * ex: 1 + 2 + 3 => ++123
-	 * ex: 1 + (2 + 3) => +1+23
-	 * ex: 0 - 1 - 5 => --015
-	 * ex: 0 - (1 - 5) => -0-15
-	 * ex: 0 - 1 + 5 => +-015
-
-	 0 - 1 - 5 => -0-15
-	 0 - 1 - 5 => --015
-	 */
-	int lowest_presidency_idx = -1, lowest_pres = ERROR_PRESIDENCY_NUMBER - 1,
-	    paranthesis = 0, brackets = 0, k;
-	struct token v;
-	struct node *ret = NULL;
-
-	if (start > end)
-		return NULL;
-	if (!is_balanced_expression(start, end))
-		error(ERROR_PARANTHESIS_NOT_MATCHING_FORMAT,
-		      tokens[start].linia, tokens[start].filename);
-	if (start == end)
-		return parse_data(start);
-	if (is_vector(start, end))
-		return parse_vector(start, end);
-	if (is_all_in_paranthesis_expression(start, end))
-		return parse_expression(start+1, end-1);
-
-	/* aici se gaseste indexul simbolului cu cel mai
-	 * mic grad
-	 */
-	paranthesis = brackets = 0;
-	for (k = start; k <= end; k++) {
-		v = tokens[k];
-
-		if (v.type == TT_LPAR)
-			paranthesis++;
-		else if (v.type == TT_RPAR)
-			paranthesis--;
-
-		if (v.type == TT_LBRACKET) {
-			brackets++;
-		} else if (v.type == TT_RBRACKET) {
-			brackets--;
-			/* parantezele au fost verificate mai sus cu is_balanced_expression */
-			if (brackets < 0)
-				error(ERROR_EXPERSSION_MALFORMED_FORMAT, v.linia,
-				      v.filename);
-		}
-
-		if (paranthesis == 0 && brackets == 0) {
-			/* trebuie sa nu fie in parenteze rotunde sau patrate,
-			 * deaorece ar modifica gradul
-			 * parantezele patrate sunt folosite la indexing
-			 */
-			int cur_pres = get_pres_operator(v);
-
-			if (cur_pres <= lowest_pres) {
-				lowest_presidency_idx = k;
-				lowest_pres = cur_pres;
-			}
-		}
-	}
-	/* parantezele au fost verificate mai sus cu is_balanced_expression */
-	if (brackets) 
-		error(ERROR_EXPERSSION_MALFORMED_FORMAT, v.linia, v.filename);
-
-	if (lowest_presidency_idx == -1) {
-		/* adica nu a fost gasit niciun operator */
-		if (tokens[start].type == TT_VAR && tokens[start+1].type == TT_LPAR)
-			return parse_call(start, end);
-		else if (tokens[start].type == TT_VAR &&
-		         tokens[start+1].type == TT_LBRACKET)
-			return parse_indexing(start, end);
-		else
-			error(ERROR_EXPERSSION_MALFORMED_FORMAT,
-			      tokens[start].linia, tokens[start].filename);
-
-	} else if (tokens[lowest_presidency_idx].type == TT_NOT) {
-		ret = new_node(TN_NOT, "", tokens[lowest_presidency_idx].linia,
-		               tokens[lowest_presidency_idx].filename);
-		ret->expresii[1] = parse_expression(lowest_presidency_idx+1, end);
-
-	} else {
-		ret = new_node(tokens[lowest_presidency_idx].type, "",
-		               tokens[lowest_presidency_idx].linia,
-			       tokens[lowest_presidency_idx].filename);
-		ret->expresii[0] = parse_expression(start, lowest_presidency_idx-1);
-		ret->expresii[1] = parse_expression(lowest_presidency_idx+1, end);
-
-		/* in caz de se foloseste un numar mai mic ca zero,
-		 * acesta va fi interpretat ca o operatie 0 - abs(numar)
-		 * ex:
-		 * x <- -1 ----> x <- 0 - 1 ----> <- x - 0 1 notare prefix
-		 * x <- -1 + 0 ----> x <- 0 - 1 + 0 ----> +-010
-		 * x <- -1 - 5 ----> x <- 0 - 1 - 5 ----> --015
-		 */
-
-		if (tokens[lowest_presidency_idx].type == TT_MINUS &&
-		    !ret->expresii[0])
-			ret->expresii[0] = new_node(TT_NUMAR, "0",
-			                      tokens[lowest_presidency_idx].linia,
-					      tokens[lowest_presidency_idx].filename);
-
-		if (!ret->expresii[0] || !ret->expresii[1])
-			error(ERROR_EXPERSSION_MALFORMED_FORMAT,
-			      tokens[start].linia, tokens[start].filename);
-	}
-	return ret;
-}
-
+#include "parse.h"
 
 /* functii ajuatatoare pentru parse */
-struct node *
+struct node*
 parse_daca(int start, int indent, int tt_next_pos)
 {
 	/* expr0: conditine, expr1: instructiuni pt adevarat,
@@ -202,7 +10,6 @@ parse_daca(int start, int indent, int tt_next_pos)
 	 */
 	struct node *ret = NULL;
 	int k, tt_begin_pos = start;
-
 	has_else = 0;
 
 	for (k = start; k <= tt_next_pos; k++) {
@@ -343,7 +150,7 @@ parse_pentru(int start, int indent, int tt_next_pos)
 	 * expr3: instructiuni pentru adevarat
 	 */
 	struct node *ret = NULL;
-	int k, tt_sepexp_count = 0, tt_sepexp_pos[2] = {0}, tt_begin_pos = 0;
+	int k, tt_sepexp_count = 0, tt_sepexp_pos[2] = {0}, tt_begin_pos;
 
 	for (k = start; k <= tt_next_pos; k++) {
 		if (tokens[k].type == TT_SEPEXP) {
@@ -719,6 +526,7 @@ new_node(int type, char *value, int linia, char *filename)
 	/* alocheaza memorie pentru un nod nou si initializeaza toate
 	 * campurile cu 0
 	 */
+	int k;
 	struct node *tmp = (struct node*)malloc(sizeof(struct node));
 
 	if (tmp == NULL)

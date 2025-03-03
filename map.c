@@ -1,9 +1,7 @@
+#include "map.h"
 #include <stdint.h>
 
-#include <map.h>
-#include <constants.h>
-
-void *
+void*
 insert_or_get_by_key(void **map, const void *key, size_t key_size,
                      struct map_utilities utils)
 {
@@ -16,7 +14,7 @@ insert_or_get_by_key(void **map, const void *key, size_t key_size,
 	return utils.insert_func(utils.index_func(map, hash), key);
 }
 
-void *
+void*
 find_by_key(void **map, const void *key, size_t key_size, struct map_utilities utils)
 {
 	int hash = utils.hash_algo(key, key_size);
@@ -29,8 +27,8 @@ adler32_string(const void *key, size_t key_size)
 {
 	/* algoritm de hash creat de Mark Adler */
 	const char *actual_key = (const char *)key;
-	size_t i;
 	unsigned short s1 = 1, s2 = 0;
+	int i;
 
 	for (i = 0; i < key_size; i++) {
 		s1 = (s1 + actual_key[i]) % 65521;
@@ -44,8 +42,8 @@ adler32_voidp(const void *key, size_t key_size)
 {
 	/* algoritm de hash creat de Mark Adler */
 	uint8_t *actual_key = (uint8_t *)&key;
-	size_t i;
 	unsigned short s1 = 1, s2 = 0;
+	int i;
 
 	for (i = 0; i < key_size; i++) {
 		s1 = (s1 + actual_key[i]) % 65521;
@@ -53,4 +51,3 @@ adler32_voidp(const void *key, size_t key_size)
 	}
 	return ((s1 << 16) | s2) % MAP_CONSTANT;
 }
-

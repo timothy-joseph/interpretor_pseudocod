@@ -1,12 +1,7 @@
 /* stackul folosit in executare pentru a tine cont
  * de subprogramele apelate
  */
-#include <stdlib.h>
-
-#include <variables.h>
-#include <stack.h>
-#include <errors.h>
-#include <global_vars_declared.h>
+#include "stack.h"
 
 struct stack*
 insert_stack(struct variable **var_map)
@@ -15,6 +10,7 @@ insert_stack(struct variable **var_map)
 	 * si un p incrementat ca un
 	 * fel de id
 	 */
+	int i;
 	struct stack *tmp = (struct stack *)malloc(sizeof(struct stack));
 
 	if (tmp == NULL)
@@ -44,4 +40,3 @@ pop_stack(void)
 	free(tmp);
 	return stack_head;
 }
-
