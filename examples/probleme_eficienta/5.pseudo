@@ -1,0 +1,44 @@
+# Subiectul nr 5 din subiectele probei practice pentru examenul de atestare
+# a competentelor profesionale a claselor de matematica-informatica si
+# matematica-informatica intensiv informatica
+# Programul in pseudocod nu va face citire din fisier,
+# deoarece nu am implementat citire din fisier in pseudocod
+#
+# subprogramul citeste a fost redenumit la Citeste, deoarece
+# citeste este un cuvant deja folosit in pseudocod
+#
+# daca se citeste de la tastatura
+# 5
+# 2.4 1.9 8.1 4.4 10.25
+# programul va afisa
+# 10.250000 8.100000 4.400000 2.400000 1.900000
+
+subprogramul Citeste(v, n) face
+|	citeste n[0]
+|
+|	pentru i <- 0, i < n[0], i <- i + 1 executa
+|	|	citeste v[i]
+
+subprogramul pozmax(v, p1, p2) executa
+|	max_pos <- p1
+|
+|	pentru i <- p1, i <= p2, i <- i + 1 executa
+|	|	daca v[i] > v[max_pos] atunci
+|	|	|	max_pos <- i
+|
+|	returneaza max_pos
+
+subprogramul main() face
+|	v <- vector(100)
+|	n <- 0
+|	
+|	Citeste(v, referinta(n))
+|	
+|	cat timp n executa
+|	|	i <- pozmax(v, 0, n-1)
+|	|	scrie v[i], ' '
+|	|	pentru j <- i, j < n-1, j <- j + 1 executa
+|	|	|	v[j] <- v[j+1]
+|	|	n <- n - 1
+
+main()

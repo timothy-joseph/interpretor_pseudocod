@@ -1,0 +1,58 @@
+# Subiectul nr 3 din subiectele probei practice pentru examenul de atestare
+# a competentelor profesionale a claselor de matematica-informatica si
+# matematica-informatica intensiv informatica
+# Programul in pseudocod nu va face citire din fisier,
+# deoarece nu am implementat citire din fisier in pseudocod
+#
+# daca se citeste de la tastatura
+# 6
+# 245 1763 23 1876 218 492873
+# programul va afisa
+# 254 1763 23 1678 218 492873
+#
+# daca se citeste de la tastatura
+# 6
+# 23 6 9 17 25 101
+# programul va afisa
+# nu au fost facuta modificari
+
+subprogramul inversareCifre(x) face
+|	p <- 1
+|	ogl <- 0
+|
+|	cat timp x[0] > 9 executa
+|	|	ogl <- ogl * 10 + x[0] % 10
+|	|	x[0] <- floor(x[0] / 10)
+|	|	p <- p * 10
+|	x[0] <- x[0] * p + ogl
+
+subprogramul nrDivizori(x) face
+|	ret <- 0
+|
+|	pentru d <- 1, d < sqrt(x), d <- d + 1 executa
+|	|	daca x % d = 0 atunci
+|	|	|	ret <- ret + 2
+|	daca floor(sqrt(x))*floor(sqrt(x)) = x atunci
+|	|	ret <- ret + 1
+|
+|	returneaza ret
+
+citeste n
+v <- vector(100)
+ok <- 0
+
+pentru i <- 0, i < n, i <- i + 1 executa
+|	citeste v[i]
+|	daca nrDivizori(v[i]) > 4 atunci
+|	|	ok <- 1
+|	|	x <- v[i]
+|	|	inversareCifre(referinta(x))
+|	|	daca v[i] != x atunci
+|	|	|	ok <- 1
+|	|	v[i] <- x
+
+daca ok atunci
+|	pentru i <- 0, i < n, i <- i + 1 executa
+|	|	scrie v[i], " "
+|altfel
+|	scrie "nu au fost facuta modificari"

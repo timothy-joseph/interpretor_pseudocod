@@ -1,0 +1,49 @@
+# Subiectul nr 9 din subiectele probei practice pentru examenul de atestare
+# a competentelor profesionale a claselor de matematica-informatica si
+# matematica-informatica intensiv informatica
+# Programul in pseudocod nu va face citire din fisier,
+# deoarece nu am implementat citire din fisier in pseudocod
+#
+# daca se citeste de la tastatura
+# 5
+# 12 23 28 29 90
+# 2 54 101 121 7
+# 1096 41 9 607 102
+# 220 34 32 421 6
+# 12 12 12 12 12
+# programul va afisa
+# 421 2
+
+subprogramul prim(x) face
+|	pentru d <- 2, d*d < x, d <- d + 1 executa
+|	|	daca x % d = 0 atunci
+|	|	|	returneaza 0
+|	
+|	returneaza d != 1 si d * d != x
+
+subprogramul contorizare(y) face
+|	daca y = 0 atunci
+|	|	returneaza 0
+|
+|	returneaza (y % 2 = 0) + contorizare(floor(y / 10))
+
+nr_cif_pare_max <- 0
+nr <- 0
+citeste n
+pentru i <- 0, i < n, i <- i + 1 executa
+|	pentru j <- 0, j < n, j <- j + 1 executa
+|	|	citeste x
+|	|
+|	|	daca prim(x) atunci
+|	|	|	daca not nr atunci
+|	|	|	|	nr <- x
+|	|	|	x_nr_cif_pare <- contorizare(x)
+|	|	|
+|	|	|	daca x_nr_cif_pare > nr_cif_pare_max atunci
+|	|	|	|	nr_cif_pare_max <- x_nr_cif_pare
+|	|	|	|	nr <- x
+|	|	|	|altfel daca x_nr_cif_pare = nr_cif_pare_max atunci
+|	|	|	|	|	daca x < nr atunci
+|	|	|	|	|	|	nr <- x
+
+scrie nr, ' ', nr_cif_pare_max

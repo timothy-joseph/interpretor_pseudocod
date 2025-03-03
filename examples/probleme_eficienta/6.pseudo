@@ -1,0 +1,67 @@
+# Subiectul nr 6 din subiectele probei practice pentru examenul de atestare
+# a competentelor profesionale a claselor de matematica-informatica si
+# matematica-informatica intensiv informatica
+# Programul in pseudocod nu va face citire din fisier,
+# deoarece nu am implementat citire din fisier in pseudocod
+#
+# am modificat aceasta cerinta sa se citeasca valoarea lui n,
+# deoarece in implementarea mea de pseudocod, functia de citire
+# nu returneaza EOF
+#
+# daca se citeste de la tastatura
+# 5
+# 1204 991 124 102 79
+# 105
+# programul va afisa
+# nu exista
+
+subprogramul construire(v, n) face
+|	pentru i <- 0, i < n[0], i <- i + 1 executa
+|	|	x <- v[i]
+|	|	nr_cif <- 0
+|	|
+|	|	cat timp x atunci
+|	|	|	nr_cif <- nr_cif + 1
+|	|	|	x <- floor(x/10)
+|	|
+|	|	daca nr_cif != 3 atunci
+|	|	|	pentru j <- i, j < n[0] - 1, j <- j + 1 executa
+|	|	|	|	v[j] <- v[j+1]
+|	|	|	n[0] <- n[0] - 1
+|	|	|	i <- i - 1
+
+subprogramul cautare(v, n, x) face
+|	s <- 0
+|	d <- n - 1
+|	
+|	cat timp s <= d executa
+|	|	mij <- (s + d) / 2
+|	|	
+|	|	daca v[mij] = x atunci
+|	|	|	returneaza mij
+|	|	
+|	|	daca x < v[mij] atunci
+|	|	|	d <- mij - 1
+|	|	|altfel daca x > v[mij] atunci
+|	|	|	|	s <- mij + 1
+|
+|	returneaza -1
+
+subprogramul main() face
+|	citeste n
+|	v <- vector(100)
+|	
+|	pentru i <- 0, i < n, i <- i + 1 executa
+|	|	citeste v[i]
+|	
+|	citeste x
+|	
+|	construire(v, referinta(n))
+|	i <- cautare(v, n, x)
+|
+|	daca i != -1 atunci
+|	|	scrie i
+|	|altfel
+|	|	scrie "nu exista"
+
+main()

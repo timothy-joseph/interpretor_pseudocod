@@ -1,0 +1,81 @@
+# Subiectul nr 4 din subiectele probei practice pentru examenul de atestare
+# a competentelor profesionale a claselor de matematica-informatica si
+# matematica-informatica intensiv informatica
+# Programul in pseudocod nu va face citire din fisier,
+# deoarece nu am implementat citire din fisier in pseudocod
+#
+# daca se citeste de la tastatura
+# 7
+# 37 132 7 2785 86 490 18
+# programul va afisa
+# 132 2785 490 18
+
+subprogramul sterge(v, n, x) face
+|	m <- n[0]
+|
+|	pentru i <- 0, i < m, i <- i + 1 executa
+|	|	daca v[i] = x atunci
+|	|	|	pentru j <- i, j < m - 1, j <- j + 1 executa
+|	|	|	|	v[j] <- v[j+1]
+|	|	|	m <- m - 1
+|	|	|	i <- i - 1
+|	|	
+|
+|	n[0] <- m
+
+subprogramul cif(n) face
+|	paritate <- n % 2
+|	
+|	cat timp n executa
+|	|	daca n % 2 != paritate atunci
+|	|	|	returneaza 0
+|	|	n <- floor(n / 10)
+|
+|	returneaza 1
+
+# aici a fost nevoie, deorece atunci cand apelam sterge, variabila
+# i era considerata ca fiind variabila globala si era modificata
+# valoarea de la instructiunea pentru din afara subprogramului,
+# creanduse astfel o eroare de programare
+subprogramul main() face
+|	citeste n
+|	v <- vector(100)
+|	ok <- 0
+|	
+|	pentru i <- 0, i < n, i <- i + 1 executa
+|	|	citeste v[i]
+|	
+|	pentru i <- 0, i < n, i <- i + 1 executa
+|	|	daca cif(v[i]) atunci
+|	|	|	sterge(v, referinta(n), v[i])
+|	|	|	ok <- 1
+|	|	|	i <- i - 1
+|	
+|	daca ok atunci
+|	|	pentru i <- 0, i < n, i <- i + 1 executa
+|	|	|	scrie v[i], ' '
+|	|altfel
+|	|	scrie "nu exista"
+
+main()
+
+# alternativ se mai putea face:
+#citeste n
+#v <- vector(100)
+#ok <- 0
+#
+#pentru p <- 0, p < n, p <- p + 1 executa
+#|	citeste v[p]
+#
+#pentru p <- 0, p < n, p <- p + 1 executa
+#|	daca cif(v[p]) atunci
+#|	|	sterge(v, referinta(n), v[p])
+#|	|	ok <- 1
+#|	|	p <- p - 1
+#
+#daca ok atunci
+#|	pentru p <- 0, p < n, p <- p + 1 executa
+#|	|	scrie v[p], ' '
+#|altfel
+#|	scrie "nu exista"
+# adica sa schimb numele variabilei

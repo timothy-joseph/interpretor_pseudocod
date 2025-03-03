@@ -1,0 +1,294 @@
+sursa "afisare.pseudo"
+sursa "evalid_helpers.pseudo"
+sursa "eatacata_helpers.pseudo"
+sursa "eegalitate_helpers.pseudo"
+sursa "input.pseudo"
+
+subprogramul abs(x) face
+|	daca x < 0 atunci
+|	|	returneaza -1 * x
+|	returneaza x
+
+subprogramul evalid(srow, scol, erow, ecol, afis) face
+|	ok <- 1
+|	ecastle <- 0
+|
+|	daca srow < 0 sau scol < 0 sau erow < 0 sau ecol < 0 sau srow > 7 sau \
+	     scol > 7 sau erow > 7 sau ecol > 7 atunci
+|	|	daca afis atunci
+|	|	|	scrie "valorile intrec limitele tabloului\n"
+|	|	returneaza 0
+|
+|	# verificare daca este o piesa
+|	daca tabla[srow][scol] = 0 atunci
+|	|	daca afis atunci
+|	|	|	scrie "pozitia de start ", schimbare_tip('A' + scol, TV_CHAR), \
+			      schimbare_tip('8' - srow, TV_CHAR), " este o casuta libera\n";
+|	|	returneaza 0
+|	
+|	# verificare daca se muta
+|	daca srow = erow si scol = ecol atunci
+|	|	daca afis atunci
+|	|	|	scrie "mutare invalida\n"
+|	|	returneaza 0
+|
+|	# verificare daca este culoarea potrivita
+|	daca tura = 0 si tabla[srow][scol] > 6 sau \
+             tura = 1 si tabla[srow][scol] < 7 atunci
+|	|	daca afis atunci
+|	|	|	scrie "incerci sa muti o piesa care nu este a ta\n"
+|	|	returneaza 0
+|
+|	daca tabla[srow][scol] - tura * 6 = 1 atunci
+|	|	ok <- evalid_pion(srow, scol, erow, ecol, afis)
+|	daca tabla[srow][scol] - tura * 6 = 2 atunci
+|	|	ok <- evalid_rege(srow, scol, erow, ecol, afis)
+|	daca tabla[srow][scol] - tura * 6 = 3 atunci
+|	|	ok <- evalid_regina(srow, scol, erow, ecol, afis)
+|	daca tabla[srow][scol] - tura * 6 = 4 atunci
+|	|	ok <- evalid_tura(srow, scol, erow, ecol, afis)
+|	daca tabla[srow][scol] - tura * 6 = 5 atunci
+|	|	ok <- evalid_nebun(srow, scol, erow, ecol, afis)
+|	daca tabla[srow][scol] - tura * 6 = 6 atunci
+|	|	ok <- evalid_cal(srow, scol, erow, ecol, afis)
+|	daca tabla[srow][scol] - tura * 6 = 2 si \
+	     tabla[erow][ecol] - tura * 6 = 4 atunci
+|	|	ecastle <- 1
+|	|	ok <- evalid_castling(srow, scol, erow, ecol, afis)
+|
+|	daca ok = 0 atunci
+|	|	daca afis atunci
+|	|	|	scrie "mutare invalida\n"
+|	|	returneaza 0
+|
+|	# verificare daca piesa care incearca sa o ia este de culoare diferita
+|	daca tabla[erow][ecol] si (tura = 0 si tabla[erow][ecol] < 7 sau \
+              tura = 1 si tabla[erow][ecol] > 6) si not ecastle atunci
+|	|	daca afis atunci
+|	|	|	scrie "nu poti sa iti iei propria piesa\n"
+|	|	returneaza 0
+|
+|	# verificare daca miscarea facuta va creea un sah pentru jucatorul care muta
+|	daca ok atunci #si einsah() atunci
+|	|	aux1 <- tabla[erow][ecol]
+|	|	aux2 <- tabla[srow][scol]
+|	|	tabla[erow][ecol] <- tabla[srow][scol]
+|	|	tabla[srow][scol] <- 0
+|	|	daca einsah() atunci
+|	|	|	daca afis atunci
+|	|	|	|	scrie "esti deja in sah si trebuie sa faci ", "o miscare ca sa iesi din sah ", "ori miscarea aceasta va creea sah\n"
+|	|	|	tabla[erow][ecol] <- aux1
+|	|	|	tabla[srow][scol] <- aux2
+|	|	|	returneaza 0
+|	|	tabla[erow][ecol] <- aux1
+|	|	tabla[srow][scol] <- aux2
+|	
+|	returneaza ok
+
+subprogramul eatacata(r, c) face
+|	# 5 etape: atacata de pion
+|	#          atacata de tura sau regina
+|	#          atacata de cal
+|	#          atacata de nebun sau regina
+|       #          atacata de rege
+|	returneaza eatacata_de_pion(r, c) + eatacata_de_tura_sau_regina(r, c) + \
+                   eatacata_de_cal(r, c) + eatacata_de_nebun_sau_regina(r, c) + \
+		   eatacata_de_rege(r, c)
+
+subprogramul einsah() face
+|	# returneaza 1 daca regele jucatorului din tura asta este in sah
+|	#            0 in orice alt caz
+|	daca tura = 0 atunci
+|	|	tip_rege <- 2
+|	|altfel
+|	|	tip_rege <- 8
+|
+|	pentru r <- 0, r <= 7, r <- r + 1 executa
+|	|	pentru c <- 0, c <= 7, c <- c + 1 executa
+|	|	|	daca tabla[r][c] = tip_rege atunci
+|	|	|	|	returneaza eatacata(r, c)
+|	returneaza 0
+
+subprogramul esahmat() face
+|	# returneaza 1 daca cel din tura si-a luat sah mat
+|	#            0 in orice alt caz
+|	#returneaza einsah() si not are_miscari_valide()
+|	rege_rowdirs <- ( 1, -1,  0,  0,  1, -1,  1, -1)
+|	rege_coldirs <- ( 0,  0, -1,  1,  1, -1, -1,  1)
+|	daca tura = 0 atunci
+|	|	tip_rege <- 2
+|	|altfel
+|	|	tip_rege <- 8
+|
+|	eatacat_regele <- 0
+|	rege_r <- 0
+|	rege_c <- 0
+|	pentru r <- 0, r <= 7, r <- r + 1 executa
+|	|	pentru c <- 0, c <= 7, c <- c + 1 executa
+|	|	|	daca tabla[r][c] = tip_rege atunci
+|	|	|	|	rege_r <- r
+|	|	|	|	rege_c <- c
+|	|	|	|	r <- 8
+|	|	|	|	c <- 8
+|	|	|	|	eatacat_regele <- eatacata(rege_r, rege_c)
+|
+|	daca eatacat_regele si are_miscari_valide() atunci
+|	|	returneaza 0
+|
+|	returneaza eatacat_regele
+
+subprogramul are_miscari_valide() face
+|	pentru i <- 0, i < 8, i <- i + 1 executa
+|	|	pentru j <- 0, j < 8, j <- j + 1 executa
+|	|	|	# verificare daca regele are miscari valide
+|	|	|	daca tabla[i][j] = 2 + tura * 6 atunci
+|	|	|	|	rege_rowdirs <- ( 1, -1,  0,  0,  1, -1,  1, -1)
+|	|	|	|	rege_coldirs <- ( 0,  0, -1,  1,  1, -1, -1,  1)
+|	|	|	| 	pentru k <- 0, k < dimensiune(rege_rowdirs), k <- k + 1 atunci
+|	|	|	|	|	daca evalid(i, j, i + rege_rowdirs[k], j + rege_coldirs[k], 0) atunci
+|	|	|	|	|	|	returneaza 1
+|	|	|	# verificare daca un pion are miscari valide
+|	|	|	daca tabla[i][j] = 1 + tura * 6 atunci
+|	|	|	|	daca evalid(i, j, i-1+2*tura, j, 0) sau \
+				     evalid(i, j, i-2+4*tura, j, 0) sau \
+				     evalid(i, j, i-1+2*tura, j + 1, 0) sau \
+				     evalid(i, j, i-1+2*tura, j - 1, 0) atunci
+|	|	|	|	|	returneaza 1;
+|	|	|	# verificare daca o tura sau regina are miscari valide
+|	|	|	daca tabla[i][j] = 4 + tura * 6 sau tabla[i][j] = 3 + tura * 6 atunci
+|	|	|	|	tura_rowdirs <- (1, -1, 0, 0)
+|	|	|	|	tura_coldirs <- (0, 0, 1, -1)
+|	|	|	|	pentru k <- 0, k < dimensiune(tura_rowdirs), k <- k + 1 executa
+|	|	|	|	|	pentru m <- 0, m < 8, m <- m + 1 executa
+|	|	|	|	|	|	daca evalid(i, j, i + m * tura_rowdirs[k], \
+						      j + m * tura_coldirs[k], 0) atunci
+|	|	|	|	|	|	|	returneaza 1;
+|	|	|	# verificare daca un nebun sau regina miscari valide
+|	|	|	daca tabla[i][j] = 5 + tura * 6 sau tabla[i][j] = 3 + tura * 6 atunci
+|	|	|	|	nebun_rowdirs <- (1, 1, -1, -1)
+|	|	|	|	nebun_coldirs <- (1, -1, -1, 1)
+|	|	|	|	pentru k <- 0, k < dimensiune(nebun_rowdirs), k <- k + 1 executa
+|	|	|	|	|	pentru m <- 0, m < 8, m <- m + 1 executa
+|	|	|	|	|	|	daca evalid(i, j, i + m * nebun_rowdirs[k], \
+						      j + m * nebun_coldirs[k], 0) atunci
+|	|	|	|	|	|	|	returneaza 1;
+|	|	|	# verificare daca un cal are miscari valide
+|	|	|	daca tabla[i][j] = 6 + 6 * tura atunci
+|	|	|	|	cal_rowdirs <- (2,  2, 1,  1, -2, -2, -1, -1)
+|	|	|	|	cal_coldirs <- (1, -1, 2, -2,  1, -1,  2, -2)
+|	|	|	|	pentru k <- 0, k < dimensiune(cal_rowdirs), k <- k + 1 executa
+|	|	|	|	|	daca evalid(i, j, i + cal_rowdirs[k], j + cal_coldirs[k], 0) atunci
+|	|	|	|	|	|	returneaza 1
+|
+|	returneaza 0
+
+subprogramul eegalitate() face
+|	# stalemate rule
+|	# dead position rule
+|	# threefold repetition
+|	# 50 move rule
+|	daca not einsah() si not are_miscari_valide() atunci
+|	|	scrie "egalitate pe baza regulii stalemante\n"
+|	|	returneaza 1
+|	daca eegalitate50moverule() atunci
+|	|	scrie "egalitate pe baza regulii 50-move\n"
+|	|	returneaza 1
+|	returneaza 0
+
+subprogramul mutare(srow, scol, erow, ecol) face
+|	daca tabla[srow][scol] = 2 atunci
+|	|	s_amutat_rege_tura[tura][0] <- 1
+|	daca tabla[srow][scol] = 4 si scol = 0 atunci
+|	|	s_amutat_rege_tura[tura][1] <- 1
+|	daca tabla[srow][scol] = 4 si scol = 7 atunci
+|	|	s_amutat_rege_tura[tura][1] <- 1
+|
+|	daca tabla[erow][ecol] atunci
+|	|	mutari_de_la_captura <- 0
+|	|altfel
+|	|	mutari_de_la_captura <- mutari_de_la_captura + 1
+|
+|	daca tabla[srow][scol] - tura * 6 = 2 si \
+	     tabla[erow][ecol] - tura * 6 = 4 atunci
+|	|	tabla[srow][scol] <- 0
+|	|	tabla[erow][ecol] <- 0
+|	|	daca scol < ecol atunci
+|	|	|	tabla[srow][scol+2] <- 2 + 6 * tura
+|	|	|	tabla[srow][scol+1] <- 4 + 6 * tura
+|	|	|altfel
+|	|	|	tabla[srow][scol-2] <- 2 + 6 * tura
+|	|	|	tabla[srow][scol-1] <- 4 + 6 * tura
+|	|altfel
+|	|	tabla[erow][ecol] <- tabla[srow][scol]
+|	|	tabla[srow][scol] <- 0
+
+tabla <- ((10, 12, 11,  9,  8, 11, 12, 10), \
+          ( 7,  7,  7,  7,  7,  7,  7,  7), \
+          ( 0,  0,  0,  0,  0,  0,  0,  0), \
+          ( 0,  0,  0,  0,  0,  0,  0,  0), \
+          ( 0,  0,  0,  0,  0,  0,  0,  0), \
+          ( 0,  0,  0,  0,  0,  0,  0,  0), \
+          ( 1,  1,  1,  1,  1,  1,  1,  1), \
+          ( 4,  6,  5,  3,  2,  5,  6,  4))
+
+#litera mica = piese albe
+#litera mare = piese negre
+#          0    1    2    3    4    5    6    7    8    9   10   11   12
+#piese <- (' ', 'p', 'k', 'q', 'r', 'b', 'n', 'P', 'K', 'Q', 'R', 'B', 'N')
+piese <- (" ", "♙", "♔", "♕", "♖", "♗", "♘", "♟︎", "♚", "♛", "♜", "♝", "♞")
+
+# rege, tura1, tura2, utilizat pentru castling
+s_amutat_rege_tura <- ((0, 0, 0), (0, 0, 0))
+
+tura <- 0 # 0 tura albe, 1 tura negre
+running <- 1
+start_row <- 0
+start_col <- 0
+end_row <- 0
+end_col <- 0
+mutari_de_la_captura <- 0
+
+afisare_input_help()
+#scrie eatacata_de_nebun_sau_regina(5, 5)
+#scrie einsah()
+#scrie esahmat()
+#scrie eatacata_de_tura_sau_regina(7, 3)
+
+cat timp running executa
+|	afisare_tabla()
+|	# verificare sah
+|	daca einsah() atunci
+|	|	scrie "esti in sah\n"
+|	
+|	# verificare sah mat
+|	daca esahmat() atunci
+|	|	running <- 0
+|	|	daca tura = 0 atunci
+|	|	|	scrie "piesele negre au gastigat\n"
+|	|	|altfel
+|	|	|	scrie "piesele alble au gastigat\n"
+|
+|	# verificare egalitate
+|	daca running si eegalitate() atunci
+|	|	scrie "egalitate\n"
+|	|	running <- 0
+|	
+|	daca running atunci
+|	|	input_mutare()
+|	|	mutare(start_row, start_col, end_row, end_col)
+|	|
+|	|	daca tura = 0 si tabla[end_row][end_col] = 1 si end_row = 0 sau \
+                     tura = 1 si tabla[end_row][end_col] = 7 si end_row = 7 atunci
+|	|	|	afisare_tabla();
+|	|	|	piesa_dorita <- input_schimbare_pion();
+|	|	|
+|	|	|	daca piesa_dorita = 'r' atunci
+|	|	|	|	tabla[end_row][end_col] <- 4 + tura * 6
+|	|	|	daca piesa_dorita = 'n' atunci
+|	|	|	|	tabla[end_row][end_col] <- 6 + tura * 6
+|	|	|	daca piesa_dorita = 'b' atunci
+|	|	|	|	tabla[end_row][end_col] <- 5 + tura * 6
+|	|	|	daca piesa_dorita = 'q' atunci
+|	|	|	|	tabla[end_row][end_col] <- 3 + tura * 6
+|	|
+|	|	tura <- not tura

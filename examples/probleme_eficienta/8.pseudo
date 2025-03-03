@@ -1,0 +1,46 @@
+# Subiectul nr 8 din subiectele probei practice pentru examenul de atestare
+# a competentelor profesionale a claselor de matematica-informatica si
+# matematica-informatica intensiv informatica
+# Programul in pseudocod nu va face citire din fisier,
+# deoarece nu am implementat citire din fisier in pseudocod
+#
+# daca se citeste de la tastatura
+# 3
+# 3 0 0
+# 1 2 0
+# 1 0 1
+# programul va afisa
+# da
+# 6
+
+subprogramul inftr(a, n) face
+|	pentru i <- 0, i < n, i <- i + 1 executa
+|	|	pentru j <- i + 1, j < n, j <- j + 1 executa
+|	|	|	daca a[i][j] atunci
+|	|	|	|	returneaza 0
+|	returneaza 1
+
+subprogramul produs(a, n) face
+|	daca n = 0 atunci
+|	|	returneaza 1
+|
+|	returneaza a[n-1][n-1] * produs(a, n-1)
+
+subprogramul main() face
+|	citeste n
+|	v <- vector(n)
+|	
+|	pentru i <- 0, i < n, i <- i + 1 executa
+|	|	v[i] <- vector(n)
+|	|	
+|	|	pentru j <- 0, j < n, j <- j + 1 executa
+|	|	|	citeste v[i][j]
+|
+|	daca inftr(v, n) atunci
+|	|	scrie "da\n"
+|	|	scrie produs(v, n)
+|	|altfel
+|	|	scrie "nu\n"
+|	|	scrie "nedeterminat"
+
+main()

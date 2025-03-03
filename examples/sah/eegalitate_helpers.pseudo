@@ -1,0 +1,2 @@
+subprogramul eegalitate50moverule() face
+|	returneaza mutari_de_la_captura >= 50

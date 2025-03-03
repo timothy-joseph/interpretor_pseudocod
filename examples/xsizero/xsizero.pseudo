@@ -1,0 +1,113 @@
+subprogramul afiseaza() face
+|	# afisare tabla
+|	tabla[0][0];
+|	pentru j <- 0, j <= 2, j <- j + 1 executa
+|	|	scrie "  ", j + 1
+|	scrie '\n'
+|
+|	pentru i <- 0, i <= 2, i <- i + 1 executa
+|	|	scrie i + 1
+|	|	pentru j <- 0, j <= 2, j <- j + 1 executa
+|	|	|	scrie ' '
+|	|	|	daca tabla[i][j] = -1 atunci
+|	|	|	|	scrie ' '
+|	|	|	|altfel daca tabla[i][j] = 0 atunci
+|	|	|	|	|	scrie '0'
+|	|	|	|	|altfel
+|	|	|	|	|	scrie 'x'
+|	|	|	scrie ' '
+|	|	scrie "\n\n"
+
+tabla <- ((-1, -1, -1), \
+          (-1, -1, -1), \
+	  (-1, -1, -1))
+running <- 1
+tura <- 1
+nr_ture <- 1
+
+cat timp running executa
+|	afiseaza()
+|
+|	# interpretare input
+|	repeta
+|	|	daca tura atunci
+|	|	|	scrie "tura x> "
+|	|	|altfel
+|	|	|	scrie "tura 0> "
+|	|
+|	|	input_ok <- 1
+|	|	citeste x, y
+|	|
+|	|	daca tip(x) != TV_NUMAR sau tip(y) != TV_NUMAR atunci
+|	|	|	input_ok <- 0
+|	|	|	scrie "inputul trebuie sa fie un numar\n"
+|	|	daca x < 1 sau x > 3 sau y < 1 sau y > 3 atunci
+|	|	|	input_ok <- 0
+|	|	|	scrie "inputul trebuie sa fie intre 1 si 3\n"
+|	|	daca input_ok atunci
+|	|	|	daca tabla[x-1][y-1] != -1 atunci
+|	|	|	|	input_ok <- 0
+|	|	|	|	scrie "casuta deja desentata\n"
+|	|pana cand input_ok
+|	
+|	tabla[x-1][y-1] <- tura
+|	# verificare castig
+|	castiglinie <- 1
+|	castigcoloana <- 1
+|	castigdiagprincipala <- 1
+|	castigdiagsecundara <- 1
+|	pentru i <- 0, i <= 2, i <- i + 1 executa
+|	|	daca tabla[i][y-1] != tura atunci
+|	|	|	castigcoloana <- 0
+|	|	daca tabla[x-1][i] != tura atunci
+|	|	|	castiglinie <- 0
+|
+|	pentru i <- 0, i <= 2, i <- i + 1 executa
+|	|	daca tabla[i][i] != tura atunci
+|	|	|	castigdiagprincipala <- 0
+|	|	daca tabla[i][2-i] != tura atunci
+|	|	|	castigdiagsecundara <- 0
+|	
+|	daca castiglinie atunci
+|	|	daca tura = 1 atunci
+|	|	|	scrie 'x'
+|	|	|altfel
+|	|	|	scrie '0'
+|	|	scrie " a castigat pe linia ", x, "\n\n"
+|	|	running <- 0
+|
+|	daca castigcoloana atunci
+|	|	daca tura = 1 atunci
+|	|	|	scrie 'x'
+|	|	|altfel
+|	|	|	scrie '0'
+|	|	scrie " a castigat pe coloana ", y, "\n\n"
+|	|	running <- 0
+|
+|	daca castigdiagprincipala atunci
+|	|	daca tura = 1 atunci
+|	|	|	scrie 'x'
+|	|	|altfel
+|	|	|	scrie '0'
+|	|	scrie " a castigat pe diagonala principala\n\n"
+|	|	running <- 0
+|
+|	daca castigdiagsecundara atunci
+|	|	daca tura = 1 atunci
+|	|	|	scrie 'x'
+|	|	|altfel
+|	|	|	scrie '0'
+|	|	scrie " a castigat pe diagonala secundara\n\n"
+|	|	running <- 0
+|
+|
+|	daca nr_ture = 9 si not castiglinie si not castigcoloana si not castigdiagprincipala si not castigdiagsecundara atunci
+|	|	scrie "egalitate\n\n"
+|	|	running <- 0
+|	nr_ture <- nr_ture + 1
+|
+|	# schimbare tura
+|	tura <- not tura
+
+afiseaza()
+

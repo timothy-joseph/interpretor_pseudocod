@@ -1,0 +1,47 @@
+subprogramul afisare_tabla() face
+|	scrie '\n'
+|	daca tura = 0 atunci
+|	|	scrie "tura albe\n"
+|	|	pentru r <- 1, r <= 8, r <- r + 1 executa
+|	|	|	scrie 9 - r
+|	|	|	pentru c <- 1, c <= 8, c <- c + 1 executa
+|	|	|	|	scrie ' ', piese[tabla[r-1][c-1]],
+|	|	|	scrie '\n'
+|	|
+|	|	scrie ' '
+|	|	pentru c <- 1, c <= 8, c <- c + 1 executa
+|	|	|	scrie ' ', schimbare_tip('A' + c - 1, TV_CHAR)
+|	|	scrie '\n'
+|	|altfel
+|	|	scrie "tura negre\n"
+|	|	pentru r <- 8, r >= 1, r <- r - 1 executa
+|	|	|	scrie 9 - r
+|	|	|	pentru c <- 8, c >= 1, c <- c - 1 executa
+|	|	|	|	scrie ' ', piese[tabla[r-1][c-1]],
+|	|	|	scrie '\n'
+|	|
+|	|	scrie ' '
+|	|	pentru c <- 8, c >= 1, c <- c - 1 executa
+|	|	|	scrie ' ', schimbare_tip('A' + c - 1, TV_CHAR)
+|	|	scrie '\n'
+|
+|	#pentru r <- 1, r <= 8, r <- r + 1 executa
+|	#|	scrie 9 - r
+|	#|	pentru c <- 1, c <= 8, c <- c + 1 executa
+|	#|	|	scrie ' ', piese[tabla[r-1][c-1]],
+|	#|	scrie '\n'
+|
+
+subprogramul afisare_input_help() face
+|	scrie "introdu locatia de start si de"
+|	scrie "sfarsit a piesei sub formatul\n"
+|	scrie "XY MN, unde X si M sunt"
+|	scrie "litere mari ce semnifica colona"
+|	scrie ", iar Y si N sunt cifre ce semnifica linia\n"
+|	scrie "piesele albe sunt literele mici,"
+|	scrie "iar piesele negre sunt cele mari\n"
+
+subprogramul afisare_schimbare_pion_help() face
+|	scrie "scrie:\nr pentru tura\nn pentru cal\n"
+|	scrie "b pentru nebun\nq pentru regina\n"
+

@@ -1,0 +1,113 @@
+subprogramul eatacata_de_pion(r, c) face
+|	daca tura = 0 atunci
+|	|	daca r > 0 si c > 0 atunci
+|	|	|	daca tabla[r-1][c-1] = 7 atunci
+|	|	|	|	returneaza 1
+|	|	daca r > 0 si c < 7 atunci
+|	|	|	daca tabla[r-1][c+1] = 7 atunci
+|	|	|	|	returneaza 1
+|	|altfel
+|	|	daca r < 7 si c < 7 atunci
+|	|	|	daca tabla[r+1][c-1] = 1 atunci
+|	|	|	|	returneaza 1
+|	|	daca r < 7 si c > 0 atunci
+|	|	|	daca tabla[r+1][c+1] = 1 atunci
+|	|	|	|	returneaza 1
+|	returneaza 0
+
+subprogramul eatacata_de_tura_sau_regina(r, c) face
+|	daca tura = 0 atunci
+|	|	tip_tura <- 10
+|	|	tip_regina <- 9
+|	|altfel
+|	|	tip_tura <- 4
+|	|	tip_regina <- 3
+|
+|	# in sus
+|	pentru i <- r - 1, i >= 0, i <- i - 1 executa
+|	|	daca tabla[i][c] = tip_tura sau tabla[i][c] = tip_regina atunci
+|	|	|	returneaza 1
+|	|	daca tabla[i][c] atunci
+|	|	|	i <- -1
+|
+|	# in stanga
+|	pentru i <- c - 1, i >= 0, i <- i - 1 executa
+|	|	daca tabla[r][i] = tip_tura sau tabla[r][i] = tip_regina atunci
+|	|	|	returneaza 1
+|	|	daca tabla[r][i] atunci
+|	|	|	i <- -1
+|
+|	# in dreapta
+|	pentru i <- c + 1, i <= 7, i <- i + 1 executa
+|	|	daca tabla[r][i] = tip_tura sau tabla[r][i] = tip_regina atunci
+|	|	|	returneaza 1
+|	|	daca tabla[r][i] atunci
+|	|	|	i <- 8
+|
+|	# in jos
+|	pentru i <- r + 1, i <= 7, i <- i + 1 executa
+|	|	daca tabla[i][c] = tip_tura sau tabla[i][c] = tip_regina atunci
+|	|	|	scrie "kfjldkajflajf"
+|	|	|	returneaza 1
+|	|	daca tabla[i][c] atunci
+|	|	|	i <- 8
+|	
+|	returneaza 0
+
+subprogramul eatacata_de_cal(r, c) face
+|	cal_rowdir <- ( 2,  2,  1,  1, -2, -2, -1, -1)
+|	cal_coldir <- ( 1, -1,  2, -2,  1, -1,  2, -2)
+|
+|	daca tura = 0 atunci
+|	|	tip_cal <- 12
+|	|altfel
+|	|	tip_cal <- 6
+|
+|	pentru k <- 0, k < dimensiune(cal_rowdir), k <- k + 1 executa
+|	|	daca r + cal_rowdir[k] >= 0 si r + cal_rowdir[k] <= 7 si \
+                     c + cal_coldir[k] >= 0 si c + cal_coldir[k] <= 7 atunci
+|	|	|	daca tabla[r + cal_rowdir[k]][c + cal_coldir[k]] = tip_cal atunci
+|	|	|	|	returneaza 1
+|
+|	returneaza 0
+
+subprogramul eatacata_de_nebun_sau_regina(r, c) face
+|	nebun_rowdirs <- (-1, -1,  1,  1)
+|	nebun_coldirs <- (-1,  1, -1,  1)
+|	k_ok <- (1, 1, 1, 1)
+|
+|	daca tura = 0 atunci
+|	|	tip_nebun <- 11
+|	|	tip_regina <- 9
+|	|altfel
+|	|	tip_nebun <- 5
+|	|	tip_regina <- 3
+|
+|	pentru i <- 1, i <= 7, i <- i + 1 executa
+|	|	pentru k <- 0, k < dimensiune(nebun_rowdirs), k <- k + 1 executa
+|	|	|	daca k_ok[k] si r + i * nebun_rowdirs[k] >= 0 si \
+                             r + i * nebun_rowdirs[k] <= 7 si c + i * nebun_coldirs[k] >= 0 si \
+			     c + i * nebun_coldirs[k] <= 7 atunci
+|	|	|	|	daca tabla[r + i * nebun_rowdirs[k]][c + i * nebun_coldirs[k]] = tip_nebun sau \
+                                     tabla[r + i * nebun_rowdirs[k]][c + i * nebun_coldirs[k]] = tip_regina atunci
+|	|	|	|	|	returneaza 1
+|	|	|	|	daca tabla[r + i * nebun_rowdirs[k]][c + i * nebun_coldirs[k]] atunci
+|	|	|	|	|	k_ok[k] <- 0
+|
+|	returneaza 0
+
+subprogramul eatacata_de_rege(r, c) face
+|	rege_rowdirs <- ( 1, -1,  0,  0,  1, -1,  1, -1)
+|	rege_coldirs <- ( 0,  0, -1,  1,  1, -1, -1,  1)
+|	daca tura = 0 atunci
+|	|	tip_rege <- 8
+|	|altfel
+|	|	tip_rege <- 2
+|
+|	pentru k <- 0, k < dimensiune(rege_rowdirs), k <- k + 1 executa
+|	|	daca r + rege_rowdirs[k] >= 0 si r + rege_rowdirs[k] <= 7 si \
+                     c + rege_coldirs[k] >= 0 si c + rege_coldirs[k] <= 7 atunci
+|	|	|	daca tabla[r + rege_rowdirs[k]][c + rege_coldirs[k]] = tip_rege atunci
+|	|	|	|	returneaza 1
+|	
+|	returneaza 0

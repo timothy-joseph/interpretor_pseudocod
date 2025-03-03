@@ -1,0 +1,48 @@
+subprogramul input_mutare() face
+|	repeta
+|	|	input_ok <- 1
+|	|	scrie "mutare> "
+|	|	citeste start, end
+|	|
+|	|	daca tip(start) = TV_VECTOR si tip(end) = TV_VECTOR atunci
+|	|	|	daca dimensiune(start) != 3 sau dimensiune(end) != 3 sau \
+	        	     start[0] < 'A' sau start[0] > 'H' sau \
+	        	     end[0] < 'A' sau end[0] > 'H' sau \
+	        	     start[1] < '1' sau start[1] > '8' sau \
+	        	     end[1] < '1' sau end[1] > '8' atunci
+|	|	|	|	input_ok <- 0
+|	|	|	|	afisare_input_help()
+|	|	|altfel
+|	|	|	input_ok <- 0
+|	|	|	afisare_input_help()
+|	|
+|	|	daca input_ok atunci
+|	|	|	start_row <- schimbare_tip('8' - start[1], TV_NUMAR);
+|	|	|	start_col <- schimbare_tip(start[0] - 'A', TV_NUMAR);
+|	|	|	end_row <- schimbare_tip('8' - end[1], TV_NUMAR);
+|	|	|	end_col <- schimbare_tip(end[0] - 'A', TV_NUMAR);
+|	|	|
+|	|	|	#scrie start_row, ' ', start_col, ' ', end_row, ' ', end_col, '\n'
+|	|	|	input_ok <- evalid(start_row, start_col, end_row, end_col, 1)
+|	|pana cand input_ok
+
+subprogramul input_schimbare_pion() face
+|	repeta
+|	|	input_ok <- 1
+|	|	afisare_schimbare_pion_help()
+|	|	scrie "schimbare pion de pe ", \
+                      schimbare_tip('A' + end_col, TV_CHAR), \
+		      schimbare_tip('8' - end_row, TV_CHAR), \
+		      "> "
+|	|	citeste piesa_dorita
+|	|	daca tip(piesa_dorita) = TV_CHAR atunci
+|	|	|	input_ok <- piesa_dorita = 'r' sau \
+                                    piesa_dorita = 'n' sau \
+			            piesa_dorita = 'b' sau \
+			            piesa_dorita = 'q'
+|	|	|altfel
+|	|	|	input_ok <- 0
+|	|pana cand input_ok
+|	
+|	returneaza piesa_dorita
+

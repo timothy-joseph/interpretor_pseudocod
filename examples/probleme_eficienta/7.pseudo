@@ -1,0 +1,69 @@
+# Subiectul nr 7 din subiectele probei practice pentru examenul de atestare
+# a competentelor profesionale a claselor de matematica-informatica si
+# matematica-informatica intensiv informatica
+# Programul in pseudocod nu va face citire din fisier,
+# deoarece nu am implementat citire din fisier in pseudocod
+#
+# daca se citeste de la tastatura
+# 4
+# 12345 57   2   39
+# 561   8    379 5
+# 1157  9    32  199
+# 595   3410 69  11
+# programul va afisa
+# 12345 2 39
+# 561 379 5
+# 1157 32 199
+# 595 69 11
+#
+# daca se citeste de la tastatura
+# 4
+# 34 57 2 39
+# 561 8 379 52
+# 112 92 32 199
+# 2 3410 79 11
+# programul va afisa
+# matrice nemodificata
+
+subprogramul elimColoana(n, a, k) face
+|	pentru i <- 0, i < n, i <- i + 1 executa
+|	|	pentru j <- k, j < n - 1, j <- j + 1 executa
+|	|	|	a[i][j] <- a[i][j+1]
+
+subprogramul cifreImpare(x) face
+|	cat timp x executa
+|	|	daca x % 2 = 0 atunci
+|	|	|	returneaza 0
+|	|	x <- floor(x/10)
+|	returneaza 1
+
+subprogramul main() face
+|	ok <- 0
+|	citeste n
+|
+|	v <- vector(20)
+|	pentru i <- 0, i < 20, i <- i + 1 executa
+|	|	v[i] <- vector(20)
+|	
+|	pentru i <- 0, i < n, i <- i + 1 executa
+|	|	pentru j <- 0, j < n, j <- j + 1 executa
+|	|	|	citeste v[i][j]
+|
+|	pentru j <- 0, j < n si not ok, j <- j + 1 executa
+|	|	nr <- 0
+|	|	pentru i <- 0, i < n, i <- i + 1 executa
+|	|	|	nr <- nr + cifreImpare(v[i][j])
+|	|
+|	|	daca nr = j + 1 atunci
+|	|	|	elimColoana(n, v, j)
+|	|	|	ok <- 1
+|
+|	daca ok atunci
+|	|	pentru i <- 0, i < n, i <- i + 1 executa
+|	|	|	pentru j <- 0, j < n - 1, j <- j + 1 executa
+|	|	|	|	scrie v[i][j], ' '
+|	|	|	scrie '\n'
+|	|altfel
+|	|	scrie "matrice nemodificata"
+
+main()

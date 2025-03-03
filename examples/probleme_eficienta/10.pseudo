@@ -1,0 +1,58 @@
+# Subiectul nr 10 din subiectele probei practice pentru examenul de atestare
+# a competentelor profesionale a claselor de matematica-informatica si
+# matematica-informatica intensiv informatica
+# Programul in pseudocod nu va face citire din fisier,
+# deoarece nu am implementat citire din fisier in pseudocod
+#
+# daca se citeste de la tastatura
+# 3 4
+#  9 7 21 4
+# 13 8  2 6
+# 28 3 10 5
+# programul va afisa
+# 5.750000
+
+# subprogramul fibo(n, x) face
+# |	x[0] <- 1
+
+subprogramul fibo(n, x) face
+|	a <- 1
+|	b <- 1
+|
+|	cat timp b <= n executa
+|	|	c <- a + b
+|	|	a <- b
+|	|	b <- c
+|
+|	x[0] <- a
+
+subprogramul divprim(a) face
+|	div_last <- 1
+|	d <- 2
+|	
+|	cat timp d <= a executa
+|	|	daca a % d = 0 executa
+|	|	|	returneaza d
+|	|	d <- d + 1
+
+subprogramul main() face
+|	s <- 0
+|	c <- 0
+|	citeste n, m
+|	
+|	pentru i <- 0, i < n, i <- i + 1 executa
+|	|	pentru j <- 0, j < m, j <- j + 1 executa
+|	|	|	citeste x
+|	|	|
+|	|	|
+|	|	|	daca divprim(x) = x atunci
+|	|	|	|	fib <- 0
+|	|	|	|	fibo(x, referinta(fib))
+|	|	|	|
+|	|	|	|	daca fib = x atunci
+|	|	|	|	|	s <- s + x
+|	|	|	|	|	c <- c + 1
+|	
+|	scrie s / c
+
+main()

@@ -1,0 +1,43 @@
+# Subiectul nr 1 din subiectele probei practice pentru examenul de atestare
+# a competentelor profesionale a claselor de matematica-informatica si
+# matematica-informatica intensiv informatica
+# Programul in pseudocod nu va face citire din fisier,
+# deoarece nu am implementat citire din fisier in pseudocod
+#
+# daca se citeste de la tastatura
+# 9
+# 19 25 5632 9872 48903 33 17634 90 3452
+# programul va afisa
+# 48903 17634 9872 90 19
+
+subprogramul p_cifra(y) face
+|	daca y <= 9 atunci
+|	|	returneaza y
+|	returneaza p_cifra(floor(y / 10));
+
+subprogramul sortare(v, n) face
+|	pentru i <- 1, i <= n, i <- i + 1 executa
+|	|	pentru j <- i + 1, j <= n, j <- j + 1 executa
+|	|	|	daca v[i] < v[j] atunci
+|	|	|	|	aux <- v[i]
+|	|	|	|	v[i] <- v[j]
+|	|	|	|	v[j] <- aux
+
+ok <- 0
+
+citeste n
+v <- vector(n + 1)
+
+pentru i <- 1, i <= n, i <- i + 1 executa
+|	citeste x
+|	cif <- p_cifra(x)
+|	daca cif = 0 sau cif = 1 sau cif = 4 sau cif = 9 atunci
+|	|	v[ok+1] <- x
+|	|	ok <- ok + 1
+
+daca ok atunci
+|	sortare(v, ok)
+|	pentru i <- 1, i <= ok, i <- i + 1 executa
+|	|	scrie v[i], " "
+|altfel
+|	scrie "nu exista"

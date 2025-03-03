@@ -1,0 +1,39 @@
+# Subiectul nr 2 din subiectele probei practice pentru examenul de atestare
+# a competentelor profesionale a claselor de matematica-informatica si
+# matematica-informatica intensiv informatica
+# Programul in pseudocod nu va face citire din fisier,
+# deoarece nu am implementat citire din fisier in pseudocod
+#
+# daca se citeste de la tastatura
+# 5
+# 63 8644 1024 102 2048
+# programul va afisa
+# 63 4322 1024 102 1024
+
+subprogramul verif(x) face
+|	cat timp x executa
+|	|	daca x % 2 = 1 atunci
+|	|	|	returneaza 0
+|	|	x <- floor(x / 10)
+|	returneaza 1
+
+subprogramul modif(x) face
+|	nou <- 0
+|	p <- 1
+|
+|	cat timp x[0] executa
+|	|	daca x[0] % 2 = 0 atunci
+|	|	|	nou <- x[0] % 10 / 2 * p + nou
+|	|	|altfel
+|	|	|	nou <- x[0] % 10 * p + nou
+|	|	x[0] <- floor(x[0] / 10)
+|	|	p <- p * 10
+|	x[0] <- nou
+
+citeste n
+cat timp n executa
+|	citeste x
+|	daca verif(x) atunci
+|	|	modif(referinta(x))
+|	scrie x, " "
+|	n <- n - 1

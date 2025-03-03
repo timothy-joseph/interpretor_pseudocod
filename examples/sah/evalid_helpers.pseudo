@@ -1,0 +1,182 @@
+subprogramul evalid_pion(srow, scol, erow, ecol, afis) face
+|	daca abs(srow - erow) != 1 atunci
+|	|	daca not (srow = 6 - 5 * tura si abs(srow - erow) = 2) atunci
+|	|	|	daca afis atunci
+|	|	|	|	scrie "aceasta nu este o mutare specifica piesei '", \
+				      piese[tabla[srow][scol]], "'\n"
+|	|	|	returneaza 0
+|	
+|	daca scol = ecol si tabla[erow][ecol] atunci
+|	|	daca afis atunci
+|	|	|	scrie "este o alta piesa in calea piesei tale\n"
+|	|	returneaza 0
+|
+|	daca abs(scol - ecol) = 1 si tabla[erow][ecol] = 0 atunci
+|	|	daca afis atunci
+|	|	|	scrie "piesa aceasta merge in diagonala ", "doar cand ia alta piesa\n"
+|	|	returneaza 0
+|
+|	daca abs(scol - ecol) >= 2 atunci
+|	|	daca afis atunci
+|	|	|	scrie "piesa aceasta merge 2 casute doar cand este ", "prima ei tura\n"
+|	|	returneaza 0
+|
+|	returneaza 1
+
+subprogramul evalid_tura(srow, scol, erow, ecol, afis) face
+|	daca srow != erow si scol != ecol si \
+             tabla[srow][scol] - tura * 6 != 3 atunci
+|	|	daca afis atunci
+|	|	|	scrie "aceasta nu este o mutare specifica piesei '", \
+			      piese[tabla[srow][scol]], "'\n"
+|	|	returneaza 0
+|
+|	daca srow = erow atunci
+|	|	daca scol < ecol atunci
+|	|	|	pentru c <- scol + 1, c < ecol, c <- c + 1 executa
+|	|	|	|	daca tabla[srow][c] atunci
+|	|	|	|	|	daca afis atunci
+|	|	|	|	|	|	scrie "este o alta piesa in calea piesei tale\n"
+|	|	|	|	|	returneaza 0
+|	|	|altfel
+|	|	|	pentru c <- scol - 1, c > ecol, c <- c + 1 executa
+|	|	|	|	daca tabla[srow][c] atunci
+|	|	|	|	|	daca afis atunci
+|	|	|	|	|	|	scrie "este o alta piesa in calea piesei tale\n"
+|	|	|	|	|	returneaza 0
+|	|altfel
+|	|	daca srow < erow atunci
+|	|	|	pentru r <- srow + 1, r < erow, r <- r + 1 executa
+|	|	|	|	daca tabla[r][scol] atunci
+|	|	|	|	|	daca afis atunci
+|	|	|	|	|	|	scrie "este o alta piesa in calea piesei tale\n"
+|	|	|	|	|	returneaza 0
+|	|	|altfel
+|	|	|	pentru r <- srow - 1, r > erow, r <- r - 1 executa
+|	|	|	|	daca tabla[r][scol] atunci
+|	|	|	|	|	daca afis atunci
+|	|	|	|	|	|	scrie "este o alta piesa in calea piesei tale\n"
+|	|	|	|	|	returneaza 0
+|	
+|	returneaza 1
+
+subprogramul evalid_cal(srow, scol, erow, ecol, afis) face
+|	daca (abs(erow - srow) != 2 sau abs(ecol - scol) != 1) si \
+             (abs(erow - srow) != 1 sau abs(ecol - scol) != 2) atunci
+|	|	daca afis atunci
+|	|	|	scrie "aceasta nu este o mutare specifica piesei '", \
+			      piese[tabla[srow][scol]], "'\n"
+|	|	returneaza 0;
+|	returneaza 1
+
+subprogramul evalid_nebun(srow, scol, erow, ecol, afis) face
+|	daca (srow = erow sau scol = ecol sau abs(erow - srow) != abs(ecol - scol)) atunci
+|	|	daca afis si tabla[srow][scol] - 6 * tura != 3 atunci
+|	|	|	scrie "aceasta nu este o mutare specifica piesei '", \
+			      piese[tabla[srow][scol]], "'\n"
+|	|	returneaza 0
+|
+|	daca srow < erow si scol < ecol atunci
+|	|	pentru i <- 1, i < erow - srow, i <- i + 1 executa
+|	|	|	daca tabla[srow + i][scol + i] atunci
+|	|	|	|	daca afis atunci
+|	|	|	|	|	scrie "este o alta piesa in calea piesei tale\n"
+|	|	|	|	returneaza 0
+|
+|	daca srow < erow si scol > ecol atunci
+|	|	pentru i <- 1, i < erow - srow, i <- i + 1 executa
+|	|	|	daca tabla[srow + i][scol - i] atunci
+|	|	|	|	daca afis atunci
+|	|	|	|	|	scrie "este o alta piesa in calea piesei tale\n"
+|	|	|	|	returneaza 0
+|
+|	daca srow > erow si scol < ecol atunci
+|	|	pentru i <- 1, i < srow - erow, i <- i + 1 executa
+|	|	|	daca tabla[srow - i][scol + i] atunci
+|	|	|	|	daca afis atunci
+|	|	|	|	|	scrie "este o alta piesa in calea piesei tale\n"
+|	|	|	|	returneaza 0
+|	
+|	daca srow > erow si scol > ecol atunci
+|	|	pentru i <- 1, i < srow - erow, i <- i + 1 executa
+|	|	|	daca tabla[srow - i][scol - i] atunci
+|	|	|	|	daca afis atunci
+|	|	|	|	|	scrie "este o alta piesa in calea piesei tale\n"
+|	|	|	|	returneaza 0
+|
+|	returneaza 1
+
+subprogramul evalid_regina(srow, scol, erow, ecol, afis) face
+|	returneaza evalid_tura(srow, scol, erow, ecol, afis) sau \
+                   evalid_nebun(srow, scol, erow, ecol, afis)
+
+subprogramul evalid_rege(srow, scol, erow, ecol, afis) face
+|	daca abs(erow - srow) > 1 sau abs(ecol - scol) > 1 atunci
+|	|	daca afis atunci
+|	|	|	scrie "regele se poate muta maxim 1 casuta", " in orice directie", " cu exceptia miscarii \"castling\"\n"
+|	|	returneaza 0
+|	
+|	tabla[srow][scol] <- 0
+|	evalid_rege_ret <- not eatacata(erow, ecol)
+|	daca tura = 0 atunci
+|	|	tabla[srow][scol] <- 2
+|	|altfel
+|	|	tabla[srow][scol] <- 8
+|	returneaza evalid_rege_ret
+
+subprogramul evalid_castling(srow, scol, erow, ecol, afis) face
+|	daca einsah() atunci
+|	|	daca afis atunci
+|	|	|	scrie "esti in sah, nu poti face castling\n"
+|	|	returneaza 0
+|	daca srow != erow atunci
+|	|	daca afis atunci
+|	|	|	scrie "castling invalid\n"
+|	|	returneaza 0
+|	daca ecol != 0 si ecol != 7 atunci
+|	|	daca afis atunci
+|	|	|	scrie "castling invalid\n"
+|	|	returneaza 0
+|	daca tura = 0 si erow != 7 sau tura = 1 si erow != 0 atunci
+|	|	daca afis atunci
+|	|	|	scrie "castling invalid\n"
+|	|	returneaza 0
+|
+|	daca s_amutat_rege_tura[tura][0] atunci
+|	|	daca afis atunci
+|	|	|	scrie "castling invalid\n"
+|	|	returneaza 0
+|	daca ecol = 0 si s_amutat_rege_tura[tura][1] atunci
+|	|	daca afis atunci
+|	|	|	scrie "castling invalid\n"
+|	|	returneaza 0
+|	daca ecol = 7 si s_amutat_rege_tura[tura][2] atunci
+|	|	daca afis atunci
+|	|	|	scrie "castling invalid\n"
+|	|	returneaza 0
+|
+|	i <- 0
+|	daca scol < ecol atunci
+|	|	pentru c <- scol + 1, c < ecol, c <- c + 1 executa
+|	|	|	daca tabla[srow][c] atunci
+|	|	|	|	daca afis atunci
+|	|	|	|	|	scrie "o piesa iti blocheaza castling-ul\n"
+|	|	|	|	returneaza 0
+|	|	|	daca i < 2 si eatacata(srow, c) atunci
+|	|	|	|	daca afis atunci
+|	|	|	|	|	scrie "o piesa iti blocheaza castling-ul\n"
+|	|	|	|	returneaza 0
+|	|	|	i <- i + 1
+|	|altfel
+|	|	pentru c <- scol - 1, c > ecol, c <- c - 1 executa
+|	|	|	daca tabla[srow][c] atunci
+|	|	|	|	daca afis atunci
+|	|	|	|	|	scrie "o piesa iti blocheaza castling-ul\n"
+|	|	|	|	returneaza 0
+|	|	|	daca i < 2 si eatacata(srow, c) atunci
+|	|	|	|	daca afis atunci
+|	|	|	|	|	scrie "o piesa iti blocheaza castling-ul\n"
+|	|	|	|	returneaza 0
+|	|	|	i <- i + 1
+|	
+|	returneaza 1
